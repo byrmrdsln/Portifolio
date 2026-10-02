@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>İletişim — Bayram Arda Aslan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="editor-chrome">
+  <div class="titlebar">
+    <span class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></span>
+  </div>
+  <nav class="tabs wrap" style="padding-left:0; padding-right:0;">
+    <a href="index.html"><span class="dot-lang"></span>Anasayfa</a>
+    <a href="hakkimda.html"><span class="dot-lang"></span>Hakkımda</a>
+    <a href="projeler.html"><span class="dot-lang"></span>Projeler</a>
+    <a href="iletisim.html"><span class="dot-lang"></span>İletişim</a>
+  </nav>
+</div>
+
+<main>
+  <div class="wrap">
+
+    <section class="page-head reveal">
+      <h1 style="font-size:clamp(30px,5vw,44px);">Konuşalım.</h1>
+      <p style="margin-top:10px;">İş birliği, staj ya da sadece sohbet için ulaşabilirsin.</p>
+    </section>
+
+    <section class="reveal">
+      <div class="json-card">
+        <span class="p">{</span><br>
+        &nbsp;&nbsp;<span class="k">"eposta"</span><span class="p">:</span> <a class="val" href="mailto:bayramardaaslan@gmail.com">bayramardaaslan@gmail.com</a><span class="p">,</span><br>
+        &nbsp;&nbsp;<span class="k">"github"</span><span class="p">:</span> <a class="val" href="https://github.com/byrmrdsln" target="_blank" rel="noopener">github.com/byrmrdsln</a><span class="p">,</span><br>
+        &nbsp;&nbsp;<span class="k">"linkedin"</span><span class="p">:</span> <a class="val" href="https://linkedin.com/in/bayram-arda-aslan-841271385" target="_blank" rel="noopener">linkedin.com/in/bayram-arda-aslan-841271385/</a><span class="p">,</span><br>
+        &nbsp;&nbsp;<span class="k">"konum"</span><span class="p">:</span> <span class="val">İzmir,Türkiye</span><span class="p">,</span><br>
+        <span class="p">}</span>
+      </div>
+    </section>
+
+    <h1 style="font-size:clamp(30px,5vw,44px); margin-top: 40px;">Bana mesaj bırakın.</h1>
+    <p>Formu doldurarak bana mesajınızı iletebilirsiniz.</p>
+    
+    <style>
+.msg-form{
+  background:#12161f; border:1px solid #242b39; border-radius:10px;
+  padding:26px; display:flex; flex-direction:column; gap:16px; margin-top:18px;
+  font-family:'Inter',sans-serif;
+}
+.msg-form .field{display:flex; flex-direction:column; gap:7px;}
+.msg-form label{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#8b93a7;}
+.msg-form input, .msg-form textarea{
+  background:#171c27; border:1px solid #242b39; border-radius:6px;
+  padding:11px 13px; color:#e7eaf1; font-family:'Inter',sans-serif; font-size:14.5px; outline:none;
+  transition:border-color .15s;
+}
+.msg-form input:focus, .msg-form textarea:focus{border-color:#f2b134;}
+.msg-form textarea{resize:vertical; min-height:110px;}
+.msg-form button{
+  font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; padding:12px 18px;
+  background:#f2b134; color:#151005; border:none; border-radius:6px; cursor:pointer;
+  transition:transform .15s;
+}
+.msg-form button:hover{transform:translateY(-2px);}
+#formResult{
+  font-family:'JetBrains Mono',monospace; 
+  font-size:13.5px; 
+  margin-top:5px;
+}
+</style>
+
+<form class="msg-form" id="msgForm">
+  <!-- Web3Forms Access Key Alanı -->
+  <input type="hidden" name="access_key" value="621b7489-3b59-4bcb-9601-458958ba2da6">
+
+  <div class="field">
+    <label for="name">İsim</label>
+    <input type="text" id="name" name="name" required>
+  </div>
+  <div class="field">
+    <label for="email">E-posta</label>
+    <input type="email" id="email" name="email" required>
+  </div>
+  <div class="field">
+    <label for="message">Mesaj</label>
+    <textarea id="message" name="message" required></textarea>
+  </div>
+  
+  <!-- Bot Koruması -->
+  <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+  <button type="submit" id="sendBtn">Gönder</button>
+  <div id="formResult"></div>
+</form>
+
+<script>
+const form = document.getElementById('msgForm');
+const result = document.getElementById('formResult');
+const sendBtn = document.getElementById('sendBtn');
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+    
+    result.innerHTML = "Gönderiliyor...";
+    result.style.color = "#f2b134";
+    sendBtn.disabled = true;
+    sendBtn.style.opacity = "0.7";
+
+    fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: json
+        })
+        .then(async (response) => {
+            let jsonResponse = await response.json();
+            if (response.status == 200) {
+                result.innerHTML = "Mesajınız başarıyla iletildi!";
+                result.style.color = "#4ade80";
+                form.reset();
+            } else {
+                result.innerHTML = jsonResponse.message || "Bir hata oluştu.";
+                result.style.color = "#f87171";
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            result.innerHTML = "Bağlantı hatası, lütfen tekrar deneyin.";
+            result.style.color = "#f87171";
+        })
+        .finally(() => {
+            sendBtn.disabled = false;
+            sendBtn.style.opacity = "1";
+        });
+});
+</script>
+
+  </div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
